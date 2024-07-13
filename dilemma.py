@@ -18,6 +18,8 @@ class Dilemma:
         self.score2: int = 0
         self.error = error
         self.rounds: int = round(uniform(turns_min, turns_max))
+        self.turns_min: int = turns_min
+        self.turns_max: int = turns_max
 
     def apply_error(self, decision: bool) -> bool:
         """
@@ -34,8 +36,8 @@ class Dilemma:
 
         Applies error, payoff and logs the step
         """
-        decision1: bool = self.player1.strategy(self.turn, self.history1, self.history2, self.score1, self.score2)
-        decision2: bool = self.player2.strategy(self.turn, self.history1, self.history2, self.score1, self.score2)
+        decision1: bool = self.player1.strategy(self.turn, self.turns_min, self.turns_max, self.history1, self.history2, self.score1, self.score2)
+        decision2: bool = self.player2.strategy(self.turn, self.turns_min, self.turns_max, self.history1, self.history2, self.score1, self.score2)
 
         decision1 = self.apply_error(decision1)
         decision2 = self.apply_error(decision2)
