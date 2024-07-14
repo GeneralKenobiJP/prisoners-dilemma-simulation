@@ -9,8 +9,21 @@ from dilemma import Dilemma
 
 
 class Simulation:
+    """
+    Simulation class (main class in the program)
+    """
     def __init__(self, players: Dict[str, int], turns_min: int, turns_max: int, error: float, mode: str = 'round-robin',
                  payoff_matrix: np.ndarray = np.array([[2, 2], [-1, 3], [3, -1], [0, 0]])) -> None:
+        """
+        Constructor of the simulation class
+        :param players: Dictionary of players (strategy name, number of players of the type)
+        :param turns_min: Minimum number of turns per round (i.e. 20 -> each player has min. 20 turns)
+        :param turns_max: Maximum number of turns per round
+        :param error: Error chance
+        :param mode: Tournament mode ('round-robin', 'evolution')
+        :param payoff_matrix: Dilemma payoff matrix, ndarray
+            [ [coop, coop], [coop, deflect], [deflect, coop], [deflect, deflect] ]
+        """
         # self.standings: List[Dict[str, int]] = players
         self.players: List[Player] = self.init_players(players)
         self.mode: str = mode
@@ -20,6 +33,11 @@ class Simulation:
         self.error: float = error
 
     def init_players(self, players: Dict[str, int]) -> List[Player]:
+        """
+        Initialize the players
+        :param players: Dictionary of players as specified in the constructor
+        :return: List of Players objects
+        """
         player_list: List[Player] = []
         for player_type in players.items():
             for i in range(player_type[1]):
@@ -30,7 +48,10 @@ class Simulation:
         return player_list
 
     def round_robin(self) -> Dict[str, int]:
-
+        """
+        Simulate a round-robin tournament
+        :return: Dictionary of standings - {unique player name, score}
+        """
         for i in range(len(self.players)-1):
             for j in range(i+1, len(self.players)):
                 dilemma: Dilemma = Dilemma(self.payoff_matrix,
@@ -51,6 +72,11 @@ class Simulation:
         pass
 
     def simulate(self) -> Dict[str, int]:
+        """
+        Simulates a tournament, calls a submethod based on the mode
+        :return: Dictionary of standings - {unique player name, score}
+        :raises: ValueError: if invalid mode of the simulation was given
+        """
         if self.mode == 'round-robin':
             return self.round_robin()
         elif self.mode == 'evolution':

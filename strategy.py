@@ -2,6 +2,12 @@ from typing import List
 
 
 def get_strategy(name: str):
+    """
+    Returns the strategy function pointer from the strategy name
+    :param name: Strategy name
+    :return: Function pointer to a specific strategy
+    :raises ValueError: if invalid strategy name was given.
+    """
     if name == 'always_cooperate':
         return always_cooperate
     else:

@@ -8,6 +8,9 @@ from player import Player
 
 
 class Dilemma:
+    """
+    Dilemma class. Simulates entire round between two players, and each turn, as well
+    """
     def __init__(self, payoff_matrix: np.ndarray, turns_min: int, turns_max: int, error: float, player1: Player, player2: Player):
         self.payoff_matrix: np.ndarray = payoff_matrix
         self.player1: Player = player1
@@ -71,10 +74,4 @@ class Dilemma:
             self.turn += 1
 
         return math.floor(self.score1/self.rounds), math.floor(self.score2/self.rounds)
-
-
-
-
-if __name__ == "__main__":
-    pass
 
