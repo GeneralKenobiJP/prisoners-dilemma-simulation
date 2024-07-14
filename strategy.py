@@ -1,5 +1,13 @@
 from typing import List
 
+
+def get_strategy(name: str):
+    if name == 'always_cooperate':
+        return always_cooperate
+    else:
+        raise ValueError('Invalid strategy name.')
+
+
 '''
 Strategies available for players of the prisoner's dilemma.
 
@@ -18,13 +26,5 @@ Parameter scheme:
 def always_cooperate(turn: int, turns_min: int, turns_max: int, own_history: List[bool], opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Always cooperates
-    :param turn:
-    :param turns_min:
-    :param turns_max:
-    :param history1:
-    :param history2:
-    :param score1:
-    :param score2:
-    :return:
     """
     return True
