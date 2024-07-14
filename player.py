@@ -1,5 +1,6 @@
 class Player:
 
-    def __init__(self, strategy):
+    def __init__(self, strategy, name: str):
         self.strategy = strategy
-        self.points = 0
+        self.score: int = 0
+        self.name: str = name

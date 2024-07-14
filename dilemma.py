@@ -1,3 +1,4 @@
+import math
 from typing import List
 from random import random, uniform
 
@@ -69,7 +70,7 @@ class Dilemma:
             self.step()
             self.turn += 1
 
-        return self.score1, self.score2
+        return math.floor(self.score1/self.rounds), math.floor(self.score2/self.rounds)
 
 
 
