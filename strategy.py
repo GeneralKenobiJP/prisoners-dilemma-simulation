@@ -84,6 +84,15 @@ def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, own_history: Lis
     """
     Always cooperates, unless cheated twice in a row - then deflects and goes back to cooperating
     """
-    if opponent_history[-1] == False or opponent_history[-2] == False:
+    if opponent_history[-1] is False and opponent_history[-2] is False:
+        return False
+    return True
+
+def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    Always cooperates, unless cheated - then deflects twice and goes back to cooperating
+    """
+    if opponent_history[-1] is False or opponent_history[-2] is False:
         return False
     return True
