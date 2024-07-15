@@ -79,4 +79,11 @@ def sus_tit_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List
         return False
     return opponent_history[-1]
 
-# def tit_for
+def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    Always cooperates, unless cheated twice in a row - then deflects and goes back to cooperating
+    """
+    if opponent_history[-1] == False or opponent_history[-2] == False:
+        return False
+    return True
