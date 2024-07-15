@@ -1,3 +1,4 @@
+from random import random
 from typing import List
 
 
@@ -61,3 +62,10 @@ def grudger(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
     if opponent_history.__contains__(False):
         return False
     return True
+
+def pick_random(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    Picks his stance at random
+    """
+    return random() < 0.5
