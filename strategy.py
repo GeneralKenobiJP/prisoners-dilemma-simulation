@@ -52,3 +52,12 @@ def tit_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List[boo
         return True
 
     return opponent_history[-1]
+
+def grudger(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    Always cooperates unless the opponent deflects - then always deflects
+    """
+    if opponent_history.__contains__(False):
+        return False
+    return True
