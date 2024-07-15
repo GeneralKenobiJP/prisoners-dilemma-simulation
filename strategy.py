@@ -69,3 +69,14 @@ def pick_random(turn: int, turns_min: int, turns_max: int, own_history: List[boo
     Picks his stance at random
     """
     return random() < 0.5
+
+def sus_tit_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    If first move - deflect. Otherwise - always copy the opponent's move
+    """
+    if len(opponent_history) == 0:
+        return False
+    return opponent_history[-1]
+
+# def tit_for
