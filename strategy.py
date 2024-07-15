@@ -107,3 +107,23 @@ def pavlov(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
     if opponent_history[-1] == own_history[-1]:
         return True
     return False
+
+def detective(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    Starts with Cooperate, Cheat, Cooperate, Cooperate. Afterwards:
+    if opponent deflected at least once - always deflect,
+    otherwise - always cooperate
+    """
+    if len(opponent_history) == 0:
+        return True
+    if len(opponent_history) == 1:
+        return False
+    if len(opponent_history) == 2:
+        return True
+    if len(opponent_history) == 3:
+        return True
+
+    if opponent_history.index(False) <= 3:
+        return False
+    return True
