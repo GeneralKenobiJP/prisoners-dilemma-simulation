@@ -29,8 +29,26 @@ Parameter scheme:
 '''
 
 
-def always_cooperate(turn: int, turns_min: int, turns_max: int, own_history: List[bool], opponent_history: List[bool], own_score: int, opponent_score: int):
+def always_cooperate(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Always cooperates
     """
     return True
+
+def always_defect(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    Always defects
+    """
+    return False
+
+def tit_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    If first move - cooperate. Otherwise - always copy the opponent's move
+    """
+    if len(opponent_history) == 0:
+        return True
+
+    return opponent_history[-1]
