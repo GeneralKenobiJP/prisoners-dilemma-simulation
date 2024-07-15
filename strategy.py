@@ -96,3 +96,14 @@ def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, own_history: Lis
     if opponent_history[-1] is False or opponent_history[-2] is False:
         return False
     return True
+
+def pavlov(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    Cooperates if the opponent moved the same as the player, otherwise deflects. If first move - cooperates
+    """
+    if len(opponent_history) == 0:
+        return True
+    if opponent_history[-1] == own_history[-1]:
+        return True
+    return False
