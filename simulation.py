@@ -85,7 +85,35 @@ class Simulation:
             raise ValueError("Invalid mode of the simulation")
 
 
-if __name__ == '__main__':
-    simulation: Simulation = Simulation({"always_cooperate": 20}, 10, 25, 0)
+def simplest(error: float) -> None:
+    """
+    Simplest possible simulation
+    """
+    simulation: Simulation = Simulation({"always_cooperate": 20}, 10, 25, error)
     print(simulation.simulate())
+
+def exhaustive(error: float) -> None:
+    """
+    Round-robin simulation with every defined strategy participating exactly once
+    """
+    players: Dict[str, int] = {
+        'always_cooperate': 1,
+        'always_defect': 1,
+        'tit_for_tat': 1,
+        'grudger': 1,
+        'pick_random': 1,
+        'sus_tit_for_tat': 1,
+        'tit_for_two_tats': 1,
+        'two_tits_for_tat': 1,
+        'pavlov': 1,
+        'detective': 1,
+        'simpleton': 1,
+        'coop_75': 1,
+        'retaliate_75': 1
+    }
+    simulation: Simulation = Simulation(players, 10, 25, error)
+    print(simulation.simulate())
+
+if __name__ == '__main__':
+    exhaustive(0)
 
