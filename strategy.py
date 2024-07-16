@@ -13,8 +13,32 @@ def get_strategy(name: str):
     """
     if name == 'always_cooperate':
         return always_cooperate
-    else:
-        raise ValueError('Invalid strategy name.')
+    if name == 'always_defect':
+        return always_defect
+    if name == 'tit_for_tat':
+        return tit_for_tat
+    if name == 'grudger':
+        return grudger
+    if name == 'pick_random':
+        return pick_random
+    if name == 'sus_tit_for_tat':
+        return sus_tit_for_tat
+    if name == 'tit_for_two_tats':
+        return tit_for_two_tats
+    if name == 'two_tits_for_tat':
+        return two_tits_for_tat
+    if name == 'pavlov':
+        return pavlov
+    if name == 'detective':
+        return detective
+    if name == 'simpleton':
+        return simpleton
+    if name == 'coop_75':
+        return coop_75
+    if name == 'retaliate_75':
+        return retaliate_75
+
+    raise ValueError('Invalid strategy name.')
 
 
 '''
