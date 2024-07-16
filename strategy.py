@@ -154,3 +154,12 @@ def coop_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray
     Cooperate with probability of 0.75
     """
     return random() < 0.75
+
+def retaliate_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    If cheated - deflect with probability of 0.75. Otherwise - cooperate
+    """
+    if len(opponent_history) == 0 or opponent_history[-1] is True:
+        return True
+    return random() >= 0.75
