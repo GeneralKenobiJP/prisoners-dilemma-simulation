@@ -109,8 +109,11 @@ def sus_tit_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np
 def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    Always cooperates, unless cheated twice in a row - then defects and goes back to cooperating
+    Always cooperates, unless cheated twice in a row - then defects and goes back to cooperating.
+    If first move - cooperate.
     """
+    if len(opponent_history) < 2:
+        return True
     if opponent_history[-1] is False and opponent_history[-2] is False:
         return False
     return True
@@ -118,9 +121,11 @@ def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, payoff_matrix: n
 def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    Always cooperates, unless cheated - then defects twice and goes back to cooperating
+    Always cooperates, unless cheated - then defects twice and goes back to cooperating. If first move - cooperate
     """
-    if opponent_history[-1] is False or opponent_history[-2] is False:
+    if len(opponent_history) == 0:
+        return True
+    if opponent_history[-1] is False or len(opponent_history) == 1 or opponent_history[-2] is False:
         return False
     return True
 
@@ -151,8 +156,11 @@ def detective(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarr
     if len(opponent_history) == 3:
         return True
 
-    if opponent_history.index(False) <= 3:
-        return False
+    try:
+        if opponent_history.index(False) <= 3:
+            return False
+    except ValueError:
+        pass
     return True
 
 def simpleton(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
