@@ -1,5 +1,5 @@
 from random import random
-from typing import List
+from typing import List, Tuple, Dict
 
 import numpy as np
 
@@ -37,6 +37,8 @@ def get_strategy(name: str):
         return coop_75
     if name == 'retaliate_75':
         return retaliate_75
+    if name == 'machine_learning':
+        return machine_learning_strategy_model().machine_learning
 
     raise ValueError('Invalid strategy name.')
 
@@ -195,3 +197,35 @@ def retaliate_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.nd
     if len(opponent_history) == 0 or opponent_history[-1] is True:
         return True
     return random() >= 0.75
+
+class machine_learning_strategy_model:
+    def __init__(self, learning_rate: float = 0.1, discount_factor: float = 0.9):
+        self.q_values: Dict[Tuple[Tuple[List[bool], List[bool]], bool], float] = {}
+        self.learning_rate: float = learning_rate
+        self.discount_factor: float = discount_factor
+
+    def get_state(self, own_moves: List[bool], opponent_moves: List[bool]) -> Tuple[List[bool], List[bool]]:
+        return own_moves, opponent_moves
+
+    def get_new_state(self, old_state: Tuple[List[bool], List[bool]], action: bool, opponent_action: bool) -> Tuple[List[bool], List[bool]]:
+        new_state = old_state
+        new_state[0].append(action)
+        new_state[1].append(opponent_action)
+        return new_state
+
+    def update_q_values(self, state: Tuple[List[bool], List[bool]], action: bool, reward: int, opponent_action: bool) -> None:
+        new_state = self.get_new_state(state, action, opponent_action)
+        if (state, action) not in self.q_values.keys():
+            self.q_values[state, action] = 1.0 if action is True else 0.0
+        if (new_state, True) not in self.q_values.keys():
+            self.q_values[new_state, True] = self.q_values[state, action] + 1.0
+        if (new_state, False) not in self.q_values.keys():
+            self.q_values[new_state, False] = self.q_values[state, action]
+
+        # todo: finish the Bellman's equation
+        # self.q_values[state, action] = (1-self.learning_rate) *  self.q_values[state, action] + self.learning_rate * (reward + self.discount_factor * )
+
+    def machine_learning(self, turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray,
+                         own_history: List[bool], opponent_history: List[bool], own_score: int, opponent_score: int):
+        x = self.get_state(None, None)
+        return True

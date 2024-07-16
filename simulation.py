@@ -115,5 +115,6 @@ def exhaustive(error: float) -> None:
     print(simulation.simulate())
 
 if __name__ == '__main__':
-    exhaustive(0)
-
+    # exhaustive(0)
+    simulation: Simulation = Simulation({"always_cooperate": 10, "machine_learning": 10}, 10, 25, 0)
+    print(simulation.simulate())
