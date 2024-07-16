@@ -60,7 +60,7 @@ def tit_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.nda
 def grudger(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    Always cooperates unless the opponent deflects - then always deflects
+    Always cooperates unless the opponent defects - then always defects
     """
     if opponent_history.__contains__(False):
         return False
@@ -76,7 +76,7 @@ def pick_random(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.nda
 def sus_tit_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    If first move - deflect. Otherwise - always copy the opponent's move
+    If first move - defect. Otherwise - always copy the opponent's move
     """
     if len(opponent_history) == 0:
         return False
@@ -85,7 +85,7 @@ def sus_tit_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np
 def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    Always cooperates, unless cheated twice in a row - then deflects and goes back to cooperating
+    Always cooperates, unless cheated twice in a row - then defects and goes back to cooperating
     """
     if opponent_history[-1] is False and opponent_history[-2] is False:
         return False
@@ -94,7 +94,7 @@ def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, payoff_matrix: n
 def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    Always cooperates, unless cheated - then deflects twice and goes back to cooperating
+    Always cooperates, unless cheated - then defects twice and goes back to cooperating
     """
     if opponent_history[-1] is False or opponent_history[-2] is False:
         return False
@@ -103,7 +103,7 @@ def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: n
 def pavlov(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    Cooperates if the opponent moved the same as the player, otherwise deflects. If first move - cooperates
+    Cooperates if the opponent moved the same as the player, otherwise defects. If first move - cooperates
     """
     if len(opponent_history) == 0:
         return True
@@ -115,7 +115,7 @@ def detective(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarr
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Starts with Cooperate, Cheat, Cooperate, Cooperate. Afterwards:
-    if opponent deflected at least once - always deflect,
+    if opponent defected at least once - always defect,
     otherwise - always cooperate
     """
     if len(opponent_history) == 0:
@@ -158,7 +158,7 @@ def coop_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray
 def retaliate_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    If cheated - deflect with probability of 0.75. Otherwise - cooperate
+    If cheated - defect with probability of 0.75. Otherwise - cooperate
     """
     if len(opponent_history) == 0 or opponent_history[-1] is True:
         return True
