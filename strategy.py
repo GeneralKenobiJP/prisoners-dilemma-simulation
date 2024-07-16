@@ -1,6 +1,8 @@
 from random import random
 from typing import List
 
+import numpy as np
+
 
 def get_strategy(name: str):
     """
@@ -22,6 +24,7 @@ Parameter scheme:
     :param turn: Current turn number
     :param turns_min: Minimum number of turns in the game
     :param turns_max: Maximum number of turns in the game
+    :param payoff_matrix: Payoff matrix of the simulation
     :param own_history: History of own moves 
     :param opponent_history: History of opponent moves
     :param own_score: Own current score 
@@ -30,21 +33,21 @@ Parameter scheme:
 '''
 
 
-def always_cooperate(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def always_cooperate(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Always cooperates
     """
     return True
 
-def always_defect(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def always_defect(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Always defects
     """
     return False
 
-def tit_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def tit_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     If first move - cooperate. Otherwise - always copy the opponent's move
@@ -54,7 +57,7 @@ def tit_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List[boo
 
     return opponent_history[-1]
 
-def grudger(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def grudger(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Always cooperates unless the opponent deflects - then always deflects
@@ -63,14 +66,14 @@ def grudger(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
         return False
     return True
 
-def pick_random(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def pick_random(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Picks his stance at random
     """
     return random() < 0.5
 
-def sus_tit_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def sus_tit_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     If first move - deflect. Otherwise - always copy the opponent's move
@@ -79,7 +82,7 @@ def sus_tit_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List
         return False
     return opponent_history[-1]
 
-def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Always cooperates, unless cheated twice in a row - then deflects and goes back to cooperating
@@ -88,7 +91,7 @@ def tit_for_two_tats(turn: int, turns_min: int, turns_max: int, own_history: Lis
         return False
     return True
 
-def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Always cooperates, unless cheated - then deflects twice and goes back to cooperating
@@ -97,7 +100,7 @@ def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, own_history: Lis
         return False
     return True
 
-def pavlov(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def pavlov(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Cooperates if the opponent moved the same as the player, otherwise deflects. If first move - cooperates
@@ -108,7 +111,7 @@ def pavlov(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
         return True
     return False
 
-def detective(turn: int, turns_min: int, turns_max: int, own_history: List[bool],
+def detective(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
     Starts with Cooperate, Cheat, Cooperate, Cooperate. Afterwards:
@@ -127,3 +130,21 @@ def detective(turn: int, turns_min: int, turns_max: int, own_history: List[bool]
     if opponent_history.index(False) <= 3:
         return False
     return True
+
+def simpleton(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    If the last move earned points, repeat the last move. Otherwise, do opposite of the last move.
+    If first move - cooperate
+    """
+    if len(opponent_history) == 0:
+        return True
+    if opponent_history[-1] is True:
+        if own_history[-1] is True:
+            return payoff_matrix[0, 0] > 0
+        return payoff_matrix[1, 0] > 0
+
+    if own_history[-1] is True:
+        return payoff_matrix[2, 0] > 0
+    return payoff_matrix[3, 0] > 0
+    
