@@ -147,4 +147,10 @@ def simpleton(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarr
     if own_history[-1] is True:
         return payoff_matrix[2, 0] > 0
     return payoff_matrix[3, 0] > 0
-    
+
+def coop_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
+                     opponent_history: List[bool], own_score: int, opponent_score: int):
+    """
+    Cooperate with probability of 0.75
+    """
+    return random() < 0.75
