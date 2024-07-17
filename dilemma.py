@@ -79,6 +79,13 @@ class Dilemma:
 
 
 def compute_score(payoff_matrix: np.ndarray, own_action: bool, opponent_action: bool) -> (int, int):
+    """
+    Computes the score based on the payoff matrix and action of both players.
+    :param payoff_matrix: Payoff matrix of the prisoner's dilemma
+    :param own_action: Own action
+    :param opponent_action: Opponent's action
+    :return: Own score, opponent score
+    """
     if own_action is True:
         if opponent_action is True:
             return payoff_matrix[0, 0], payoff_matrix[0, 1]
