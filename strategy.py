@@ -222,8 +222,9 @@ class machine_learning_strategy_model:
         if (new_state, False) not in self.q_values.keys():
             self.q_values[new_state, False] = self.q_values[state, action]
 
-        # todo: finish the Bellman's equation
-        # self.q_values[state, action] = (1-self.learning_rate) *  self.q_values[state, action] + self.learning_rate * (reward + self.discount_factor * )
+        best_future_state = max(self.q_values[new_state, True], self.q_values[new_state, False])
+        self.q_values[state, action] = ((1-self.learning_rate) * self.q_values[state, action] + 
+                                        self.learning_rate * (reward + self.discount_factor * best_future_state))
 
     def machine_learning(self, turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray,
                          own_history: List[bool], opponent_history: List[bool], own_score: int, opponent_score: int):
