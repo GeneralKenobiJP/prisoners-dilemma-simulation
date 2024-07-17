@@ -3,6 +3,9 @@ from typing import List, Tuple, Dict
 
 import numpy as np
 
+import dilemma
+from dilemma import compute_score
+
 
 def get_strategy(name: str):
     """
@@ -213,8 +216,15 @@ class machine_learning_strategy_model:
         new_state[1].append(opponent_action)
         return new_state
 
-    def update_q_values(self, state: Tuple[List[bool], List[bool]], action: bool, reward: int, opponent_action: bool) -> None:
-        new_state = self.get_new_state(state, action, opponent_action)
+    def get_previous_state(self, own_moves: List[bool], opponent_moves: List[bool]) -> Tuple[List[bool], List[bool]]:
+        return own_moves[:-1], opponent_moves[:-1]
+
+    def update_q_values(self, new_state: Tuple[List[bool], List[bool]], payoff_matrix: np.ndarray) -> None:
+        state: Tuple[List[bool], List[bool]] = (new_state[0][:-1], new_state[1][:-1])
+        action: bool = new_state[0][-1]
+        opponent_action: bool = new_state[1][-1]
+        reward: int = dilemma.compute_score(payoff_matrix, action, opponent_action)
+
         if (state, action) not in self.q_values.keys():
             self.q_values[state, action] = 1.0 if action is True else 0.0
         if (new_state, True) not in self.q_values.keys():
@@ -223,10 +233,14 @@ class machine_learning_strategy_model:
             self.q_values[new_state, False] = self.q_values[state, action]
 
         best_future_state = max(self.q_values[new_state, True], self.q_values[new_state, False])
-        self.q_values[state, action] = ((1-self.learning_rate) * self.q_values[state, action] + 
+        self.q_values[state, action] = ((1-self.learning_rate) * self.q_values[state, action] +
                                         self.learning_rate * (reward + self.discount_factor * best_future_state))
 
     def machine_learning(self, turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray,
                          own_history: List[bool], opponent_history: List[bool], own_score: int, opponent_score: int):
-        x = self.get_state(None, None)
-        return True
+        if turn > 0:
+            self.update_q_values(self.get_state(own_history, opponent_history), payoff_matrix)
+        state: Tuple[List[bool], List[bool]] = self.get_state(own_history, opponent_history)
+        action: bool = self.q_values[state, True] >= self.q_values[state, False]
+        
+        return action

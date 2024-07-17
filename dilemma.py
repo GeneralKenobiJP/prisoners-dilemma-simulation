@@ -56,7 +56,7 @@ class Dilemma:
                 self.score1 += self.payoff_matrix[1, 0]
                 self.score2 += self.payoff_matrix[1, 1]
         else:
-            if decision1 is True:
+            if decision2 is True:
                 self.score1 += self.payoff_matrix[2, 0]
                 self.score2 += self.payoff_matrix[2, 1]
             else:
@@ -77,3 +77,15 @@ class Dilemma:
 
         return math.floor(self.score1/self.rounds), math.floor(self.score2/self.rounds)
 
+
+def compute_score(payoff_matrix: np.ndarray, own_action: bool, opponent_action: bool) -> (int, int):
+    if own_action is True:
+        if opponent_action is True:
+            return payoff_matrix[0, 0], payoff_matrix[0, 1]
+        else:
+            return payoff_matrix[1, 0], payoff_matrix[1, 1]
+    else:
+        if opponent_action is True:
+            return payoff_matrix[2, 0], payoff_matrix[2, 1]
+        else:
+            return payoff_matrix[3, 0], payoff_matrix[3, 1]
