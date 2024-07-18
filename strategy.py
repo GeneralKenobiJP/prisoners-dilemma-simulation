@@ -212,18 +212,19 @@ class machine_learning_strategy_model:
         :param discount_factor: The lesser the discount factor, the lesser importance is put to the future rewards
         (as opposed to the immediate rewards)
         """
-        self.q_values: Dict[Tuple[Tuple[List[bool], List[bool]], bool], float] = {}
+        self.q_values: Dict[Tuple[Tuple[Tuple[bool], Tuple[bool]], bool], float] = {(((),()), True): 1.0,
+                                                                                    (((),()), False): 0.0}
         self.learning_rate: float = learning_rate
         self.discount_factor: float = discount_factor
 
-    def get_state(self, own_moves: List[bool], opponent_moves: List[bool]) -> Tuple[List[bool], List[bool]]:
+    def get_state(self, own_moves: List[bool], opponent_moves: List[bool]) -> Tuple[Tuple[bool], Tuple[bool]]:
         """
         Creates a state tuple from own moves list and opponent moves list
         :param own_moves: List of own moves
         :param opponent_moves: List of opponent moves
         :return: Tuple containing own moves and opponent moves
         """
-        return own_moves, opponent_moves
+        return tuple(own_moves), tuple(opponent_moves)
 
     # def get_new_state(self, old_state: Tuple[List[bool], List[bool]], action: bool, opponent_action: bool) -> Tuple[List[bool], List[bool]]:
     #     new_state = old_state
@@ -234,16 +235,16 @@ class machine_learning_strategy_model:
     # def get_previous_state(self, own_moves: List[bool], opponent_moves: List[bool]) -> Tuple[List[bool], List[bool]]:
     #     return own_moves[:-1], opponent_moves[:-1]
 
-    def update_q_values(self, new_state: Tuple[List[bool], List[bool]], payoff_matrix: np.ndarray) -> None:
+    def update_q_values(self, new_state: Tuple[Tuple[bool], Tuple[bool]], payoff_matrix: np.ndarray) -> None:
         """
         Updates the Q-values of the q-learning algorithm according to the Bellman equation
         :param new_state: The state achieved after the previous move
         :param payoff_matrix: The payoff matrix of the prisoner's dilemma
         """
-        state: Tuple[List[bool], List[bool]] = (new_state[0][:-1], new_state[1][:-1])
+        state: Tuple[Tuple[bool], Tuple[bool]] = (new_state[0][:-1], new_state[1][:-1])
         action: bool = new_state[0][-1]
         opponent_action: bool = new_state[1][-1]
-        reward: int = dilemma.compute_score(payoff_matrix, action, opponent_action)
+        reward: int = dilemma.compute_score(payoff_matrix, action, opponent_action)[0]
 
         if (state, action) not in self.q_values.keys():
             self.q_values[state, action] = 1.0 if action is True else 0.0
@@ -261,9 +262,12 @@ class machine_learning_strategy_model:
         """
         Machine learning strategy - reacts according to the q-learning model.
         """
+        if turn == -1:  # Debug
+            print(self.q_values)
+            return
         if turn > 0:
             self.update_q_values(self.get_state(own_history, opponent_history), payoff_matrix)
-        state: Tuple[List[bool], List[bool]] = self.get_state(own_history, opponent_history)
+        state: Tuple[Tuple[bool], Tuple[bool]] = self.get_state(own_history, opponent_history)
         action: bool = self.q_values[state, True] >= self.q_values[state, False]
 
         return action
