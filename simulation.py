@@ -90,7 +90,8 @@ def simplest(error: float) -> None:
     Simplest possible simulation
     """
     simulation: Simulation = Simulation({"always_cooperate": 20}, 10, 25, error)
-    print(simulation.simulate())
+    result = simulation.simulate()
+    print(result)
 
 def exhaustive(error: float) -> None:
     """
@@ -109,11 +110,21 @@ def exhaustive(error: float) -> None:
         'detective': 1,
         'simpleton': 1,
         'coop_75': 1,
-        'retaliate_75': 1
+        'retaliate_75': 1,
+        'machine_learning': 1
     }
     simulation: Simulation = Simulation(players, 10, 25, error)
-    print(simulation.simulate())
+    result = simulation.simulate()
+    print(result)
+    for i in range(len(players)):
+        try:
+            simulation.players[i].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
+        except:
+            pass
 
 if __name__ == '__main__':
     exhaustive(0)
-
+    # simulation: Simulation = Simulation({"always_cooperate": 10, "machine_learning": 10}, 10, 25, 0)
+    # result = simulation.simulate()
+    # simulation.players[1].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
+    # print(result)

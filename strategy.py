@@ -1,7 +1,10 @@
 from random import random
-from typing import List
+from typing import List, Tuple, Dict
 
 import numpy as np
+
+import dilemma
+from dilemma import compute_score
 
 
 def get_strategy(name: str):
@@ -37,6 +40,8 @@ def get_strategy(name: str):
         return coop_75
     if name == 'retaliate_75':
         return retaliate_75
+    if name == 'machine_learning':
+        return machine_learning_strategy_model().machine_learning
 
     raise ValueError('Invalid strategy name.')
 
@@ -195,3 +200,74 @@ def retaliate_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.nd
     if len(opponent_history) == 0 or opponent_history[-1] is True:
         return True
     return random() >= 0.75
+
+class machine_learning_strategy_model:
+    """
+    Class that holds a machine learning strategy model. Uses q-learning
+    """
+    def __init__(self, learning_rate: float = 0.1, discount_factor: float = 0.9):
+        """
+        Constructor for machine learning strategy model
+        :param learning_rate: The higher the learning rate, the more responsive to change the model is.
+        :param discount_factor: The lesser the discount factor, the lesser importance is put to the future rewards
+        (as opposed to the immediate rewards)
+        """
+        self.q_values: Dict[Tuple[Tuple[Tuple[bool], Tuple[bool]], bool], float] = {(((),()), True): 1.0,
+                                                                                    (((),()), False): 0.0}
+        self.learning_rate: float = learning_rate
+        self.discount_factor: float = discount_factor
+
+    def get_state(self, own_moves: List[bool], opponent_moves: List[bool]) -> Tuple[Tuple[bool], Tuple[bool]]:
+        """
+        Creates a state tuple from own moves list and opponent moves list
+        :param own_moves: List of own moves
+        :param opponent_moves: List of opponent moves
+        :return: Tuple containing own moves and opponent moves
+        """
+        return tuple(own_moves), tuple(opponent_moves)
+
+    # def get_new_state(self, old_state: Tuple[List[bool], List[bool]], action: bool, opponent_action: bool) -> Tuple[List[bool], List[bool]]:
+    #     new_state = old_state
+    #     new_state[0].append(action)
+    #     new_state[1].append(opponent_action)
+    #     return new_state
+    #
+    # def get_previous_state(self, own_moves: List[bool], opponent_moves: List[bool]) -> Tuple[List[bool], List[bool]]:
+    #     return own_moves[:-1], opponent_moves[:-1]
+
+    def update_q_values(self, new_state: Tuple[Tuple[bool], Tuple[bool]], payoff_matrix: np.ndarray) -> None:
+        """
+        Updates the Q-values of the q-learning algorithm according to the Bellman equation
+        :param new_state: The state achieved after the previous move
+        :param payoff_matrix: The payoff matrix of the prisoner's dilemma
+        """
+        state: Tuple[Tuple[bool], Tuple[bool]] = (new_state[0][:-1], new_state[1][:-1])
+        action: bool = new_state[0][-1]
+        opponent_action: bool = new_state[1][-1]
+        reward: int = dilemma.compute_score(payoff_matrix, action, opponent_action)[0]
+
+        if (state, action) not in self.q_values.keys():
+            self.q_values[state, action] = 1.0 if action is True else 0.0
+        if (new_state, True) not in self.q_values.keys():
+            self.q_values[new_state, True] = self.q_values[state, action] + 1.0
+        if (new_state, False) not in self.q_values.keys():
+            self.q_values[new_state, False] = self.q_values[state, action]
+
+        best_future_state = max(self.q_values[new_state, True], self.q_values[new_state, False])
+        self.q_values[state, action] = ((1-self.learning_rate) * self.q_values[state, action] +
+                                        self.learning_rate * (reward + self.discount_factor * best_future_state))
+
+    def machine_learning(self, turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray,
+                         own_history: List[bool], opponent_history: List[bool], own_score: int, opponent_score: int):
+        """
+        Machine learning strategy - reacts according to the q-learning model.
+        """
+        if turn == -1:  # Debug
+            print(self.q_values)
+            return
+        if turn > 0:
+            self.update_q_values(self.get_state(own_history, opponent_history), payoff_matrix)
+        state: Tuple[Tuple[bool], Tuple[bool]] = self.get_state(own_history, opponent_history)
+        action: bool = self.q_values[state, True] >= self.q_values[state, False]
+
+        return action
