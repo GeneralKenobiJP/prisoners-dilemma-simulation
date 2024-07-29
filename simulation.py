@@ -84,6 +84,33 @@ class Simulation:
         else:
             raise ValueError("Invalid mode of the simulation")
 
+    def duel(self, player1: str, player2: str) -> (int, int):
+        """
+        Inside the simulation scope, duel two selected players and output the dilemma result.
+        :param player1: Name of player 1
+        :param player2: Name of player 2
+        :return: score of player 1 and score of player 2
+        """
+        temp_mode = self.mode
+        self.mode = 'round-robin'
+
+        player_A = next((player for player in self.players if player.name == player1), None)
+        player_B = next((player for player in self.players if player.name == player2), None)
+        dilemma: Dilemma = Dilemma(self.payoff_matrix, self.turns_min, self.turns_max,
+                                   self.error, player_A, player_B)
+        result = dilemma.run()
+
+        self.mode = temp_mode
+        return result
+
+    # def duel_all(self, player: str):
+    #     player_A = next((this_player for this_player in self.players if this_player.name == player), None)
+    #     for opponent in self.players:
+    #         if opponent == player:
+    #             continue
+    #         print(self.duel(player_A, opponent))
+
+
 
 def simplest(error: float) -> None:
     """
@@ -124,6 +151,12 @@ def exhaustive(error: float) -> None:
     #         pass
 
 def suite(players: Dict[str, int], error: float, iterations: int) -> None:
+    """
+    Runs the simulation with preselected players and error rate for a given number of iterations.
+    :param players: Dictionary of players
+    :param error: Error chance
+    :param iterations: Number of iterations
+    """
     simulation: Simulation = Simulation(players, 10, 25, error)
     for i in range(iterations):
         result = simulation.simulate()
