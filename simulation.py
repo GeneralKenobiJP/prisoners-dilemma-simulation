@@ -140,7 +140,7 @@ def exhaustive(error: float) -> None:
         'retaliate_75': 1,
         'machine_learning': 1
     }
-    suite(players, error, 50)
+    suite(players, error, 10000)
     # simulation: Simulation = Simulation(players, 10, 25, error)
     # result = simulation.simulate()
     # print(result)
@@ -167,9 +167,20 @@ def suite(players: Dict[str, int], error: float, iterations: int) -> None:
             for player in simulation.players:
                 player.score = 0
     print("###")
+    print("always_defect")
     print(simulation.duel("machine_learning", "always_defect"))
-    # dilemma: Dilemma = Dilemma(simulation.payoff_matrix, simulation.turns_min, simulation.turns_max, simulation.error, simulation.players[0], simulation.players[1])
-    # print(dilemma.run())
+    print("###")
+    print("tit_for_tat")
+    print(simulation.duel("machine_learning", "tit_for_tat"))
+    print("###")
+    print("grudger")
+    print(simulation.duel("machine_learning", "grudger"))
+    print("###")
+    print("simpleton")
+    print(simulation.duel("machine_learning", "simpleton"))
+    print("###")
+    print("retaliate_75")
+    print(simulation.duel("machine_learning", "retaliate_75"))
     # for i in range(len(players)):
     #     try:
     #         simulation.players[i].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model

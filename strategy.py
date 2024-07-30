@@ -205,14 +205,14 @@ class machine_learning_strategy_model:
     """
     Class that holds a machine learning strategy model. Uses q-learning
     """
-    def __init__(self, learning_rate: float = 0.1, discount_factor: float = 0.9):
+    def __init__(self, learning_rate: float = 0.25, discount_factor: float = 0.8):
         """
         Constructor for machine learning strategy model
         :param learning_rate: The higher the learning rate, the more responsive to change the model is.
         :param discount_factor: The lesser the discount factor, the lesser importance is put to the future rewards
         (as opposed to the immediate rewards)
         """
-        self.q_values: Dict[Tuple[Tuple[Tuple[bool], Tuple[bool]], bool], float] = {(((),()), True): 1.0,
+        self.q_values: Dict[Tuple[Tuple[Tuple[bool], Tuple[bool]], bool], float] = {(((),()), True): 0.1,
                                                                                     (((),()), False): 0.0}
         self.learning_rate: float = learning_rate
         self.discount_factor: float = discount_factor
@@ -247,9 +247,9 @@ class machine_learning_strategy_model:
         reward: int = dilemma.compute_score(payoff_matrix, action, opponent_action)[0]
 
         if (state, action) not in self.q_values.keys():
-            self.q_values[state, action] = 1.0 if action is True else 0.0
+            self.q_values[state, action] = 0.1 if action is True else 0
         if (new_state, True) not in self.q_values.keys():
-            self.q_values[new_state, True] = self.q_values[state, action] + 1.0
+            self.q_values[new_state, True] = self.q_values[state, action] + 0.1
         if (new_state, False) not in self.q_values.keys():
             self.q_values[new_state, False] = self.q_values[state, action]
 
