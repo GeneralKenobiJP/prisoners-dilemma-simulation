@@ -98,7 +98,7 @@ class Simulation:
         player_B = next((player for player in self.players if player.name == player2), None)
         dilemma: Dilemma = Dilemma(self.payoff_matrix, self.turns_min, self.turns_max,
                                    self.error, player_A, player_B)
-        result = dilemma.run()
+        result = dilemma.run(debug=True)
 
         self.mode = temp_mode
         return result
@@ -167,8 +167,9 @@ def suite(players: Dict[str, int], error: float, iterations: int) -> None:
             for player in simulation.players:
                 player.score = 0
     print("###")
-    dilemma: Dilemma = Dilemma(simulation.payoff_matrix, simulation.turns_min, simulation.turns_max, simulation.error, simulation.players[0], simulation.players[1])
-    print(dilemma.run())
+    print(simulation.duel("machine_learning", "always_defect"))
+    # dilemma: Dilemma = Dilemma(simulation.payoff_matrix, simulation.turns_min, simulation.turns_max, simulation.error, simulation.players[0], simulation.players[1])
+    # print(dilemma.run())
     # for i in range(len(players)):
     #     try:
     #         simulation.players[i].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
