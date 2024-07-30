@@ -84,6 +84,33 @@ class Simulation:
         else:
             raise ValueError("Invalid mode of the simulation")
 
+    def duel(self, player1: str, player2: str) -> (int, int):
+        """
+        Inside the simulation scope, duel two selected players and output the dilemma result.
+        :param player1: Name of player 1
+        :param player2: Name of player 2
+        :return: score of player 1 and score of player 2
+        """
+        temp_mode = self.mode
+        self.mode = 'round-robin'
+
+        player_A = next((player for player in self.players if player.name == player1), None)
+        player_B = next((player for player in self.players if player.name == player2), None)
+        dilemma: Dilemma = Dilemma(self.payoff_matrix, self.turns_min, self.turns_max,
+                                   self.error, player_A, player_B)
+        result = dilemma.run(debug=True)
+
+        self.mode = temp_mode
+        return result
+
+    # def duel_all(self, player: str):
+    #     player_A = next((this_player for this_player in self.players if this_player.name == player), None)
+    #     for opponent in self.players:
+    #         if opponent == player:
+    #             continue
+    #         print(self.duel(player_A, opponent))
+
+
 
 def simplest(error: float) -> None:
     """
@@ -113,14 +140,53 @@ def exhaustive(error: float) -> None:
         'retaliate_75': 1,
         'machine_learning': 1
     }
+    suite(players, error, 10000)
+    # simulation: Simulation = Simulation(players, 10, 25, error)
+    # result = simulation.simulate()
+    # print(result)
+    # for i in range(len(players)):
+    #     try:
+    #         simulation.players[i].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
+    #     except:
+    #         pass
+
+def suite(players: Dict[str, int], error: float, iterations: int) -> None:
+    """
+    Runs the simulation with preselected players and error rate for a given number of iterations.
+    :param players: Dictionary of players
+    :param error: Error chance
+    :param iterations: Number of iterations
+    """
     simulation: Simulation = Simulation(players, 10, 25, error)
-    result = simulation.simulate()
-    print(result)
-    for i in range(len(players)):
-        try:
-            simulation.players[i].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
-        except:
-            pass
+    for i in range(iterations):
+        result = simulation.simulate()
+        print("\n")
+        print("Run #" + str(i+1))
+        print(result)
+        if i != iterations - 1:
+            for player in simulation.players:
+                player.score = 0
+    print("###")
+    print("always_defect")
+    print(simulation.duel("machine_learning", "always_defect"))
+    print("###")
+    print("tit_for_tat")
+    print(simulation.duel("machine_learning", "tit_for_tat"))
+    print("###")
+    print("grudger")
+    print(simulation.duel("machine_learning", "grudger"))
+    print("###")
+    print("simpleton")
+    print(simulation.duel("machine_learning", "simpleton"))
+    print("###")
+    print("retaliate_75")
+    print(simulation.duel("machine_learning", "retaliate_75"))
+    # for i in range(len(players)):
+    #     try:
+    #         simulation.players[i].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
+    #     except:
+    #         pass
+
 
 if __name__ == '__main__':
     exhaustive(0)

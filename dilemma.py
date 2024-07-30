@@ -34,19 +34,30 @@ class Dilemma:
         else:
             return decision
 
-    def step(self) -> None:
+    def step(self, debug: bool = False) -> None:
         """
         Simulates one prisoner's dilemma (a turn for both players)
 
         Applies error, payoff and logs the step
+
+        :param debug: If true - print decisions
         """
-        decision1: bool = self.player1.strategy(self.turn, self.turns_min, self.turns_max, self.payoff_matrix,
-                                                self.history1, self.history2, self.score1, self.score2)
-        decision2: bool = self.player2.strategy(self.turn, self.turns_min, self.turns_max, self.payoff_matrix,
-                                                self.history1, self.history2, self.score1, self.score2)
+        decision1: bool = bool(self.player1.strategy(self.turn, self.turns_min, self.turns_max, self.payoff_matrix,
+                                                self.history1, self.history2, self.score1, self.score2))
+        decision2: bool = bool(self.player2.strategy(self.turn, self.turns_min, self.turns_max, self.payoff_matrix,
+                                                self.history1, self.history2, self.score1, self.score2))
+
+        debug_string1: str = str(decision1)
+        debug_string2: str = str(decision2)
 
         decision1 = self.apply_error(decision1)
         decision2 = self.apply_error(decision2)
+
+        debug_string1 += "(" + str(decision1) + ")"
+        debug_string2 += "(" + str(decision2) + ")"
+
+        if debug:
+            print(debug_string1 + "vs. " + debug_string2)
 
         if decision1 is True:
             if decision2 is True:
@@ -63,19 +74,20 @@ class Dilemma:
                 self.score1 += self.payoff_matrix[3, 0]
                 self.score2 += self.payoff_matrix[3, 1]
 
-        self.history1.append(decision1)
-        self.history2.append(decision2)
+        self.history1.append(bool(decision1))
+        self.history2.append(bool(decision2))
 
-    def run(self) -> (int, int):
+    def run(self, debug: bool = False) -> (int, int):
         """
         Runs the game for a random number of rounds that belongs to the [turns_min, turns_max] interval
+        :param debug: If true - print decisions while calling another steps
         :return: score of player 1 and score of player 2
         """
         while self.turn < self.rounds:
-            self.step()
+            self.step(debug)
             self.turn += 1
 
-        return math.floor(self.score1/self.rounds), math.floor(self.score2/self.rounds)
+        return math.floor(10*self.score1/self.rounds), math.floor(10*self.score2/self.rounds)
 
 
 def compute_score(payoff_matrix: np.ndarray, own_action: bool, opponent_action: bool) -> (int, int):
