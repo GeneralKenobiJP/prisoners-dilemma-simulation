@@ -130,7 +130,7 @@ def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: n
     """
     if len(opponent_history) == 0:
         return True
-    if opponent_history[-1] is False or len(opponent_history) == 1 or opponent_history[-2] is False:
+    if opponent_history[-1] is False or (len(opponent_history) > 1 and opponent_history[-2] is False):
         return False
     return True
 
@@ -171,19 +171,19 @@ def detective(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarr
 def simpleton(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    If the last move earned points, repeat the last move. Otherwise, do opposite of the last move.
+    If the last move earned points, repeat the last move. Otherwise, do the opposite of the last move.
     If first move - cooperate
     """
     if len(opponent_history) == 0:
         return True
     if opponent_history[-1] is True:
         if own_history[-1] is True:
-            return bool(payoff_matrix[0, 0] > 0)
-        return bool(payoff_matrix[1, 0] > 0)
+            return True if bool(payoff_matrix[0, 0] > 0) else False
+        return False if bool(payoff_matrix[2, 0] > 0) else True
 
     if own_history[-1] is True:
-        return bool(payoff_matrix[2, 0] > 0)
-    return bool(payoff_matrix[3, 0]) > 0
+        return True if bool(payoff_matrix[1, 0] > 0) else False
+    return False if bool(payoff_matrix[3, 0]) > 0 else True
 
 def coop_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
@@ -205,7 +205,7 @@ class machine_learning_strategy_model:
     """
     Class that holds a machine learning strategy model. Uses q-learning
     """
-    def __init__(self, learning_rate: float = 0.25, discount_factor: float = 0.8):
+    def __init__(self, learning_rate: float = 0.15, discount_factor: float = 0.9):
         """
         Constructor for machine learning strategy model
         :param learning_rate: The higher the learning rate, the more responsive to change the model is.
