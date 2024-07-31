@@ -103,12 +103,24 @@ class Simulation:
         self.mode = temp_mode
         return result
 
-    # def duel_all(self, player: str):
-    #     player_A = next((this_player for this_player in self.players if this_player.name == player), None)
-    #     for opponent in self.players:
-    #         if opponent == player:
-    #             continue
-    #         print(self.duel(player_A, opponent))
+    def duel_all(self, player: str) -> None:
+        """
+        Inside the simulation scope, duel with each opponent as a selected player
+        :param player: Name of the selected player
+        """
+        temp_mode = self.mode
+        self.mode = 'round-robin'
+
+        player_A = next((this_player for this_player in self.players if this_player.name == player), None)
+        for opponent in self.players:
+            if opponent == player:
+                continue
+            print("###")
+            print(opponent.name)
+            dilemma: Dilemma = Dilemma(self.payoff_matrix, self.turns_min, self.turns_max,
+                                       self.error, player_A, opponent)
+            print(dilemma.run(debug=True))
+        self.mode = temp_mode
 
 
 
@@ -166,31 +178,23 @@ def suite(players: Dict[str, int], error: float, iterations: int) -> None:
         if i != iterations - 1:
             for player in simulation.players:
                 player.score = 0
-    print("###")
-    print("always_defect")
-    print(simulation.duel("machine_learning", "always_defect"))
-    print("###")
-    print("tit_for_tat")
-    print(simulation.duel("machine_learning", "tit_for_tat"))
-    print("###")
-    print("grudger")
-    print(simulation.duel("machine_learning", "grudger"))
-    print("###")
-    print("simpleton")
-    print(simulation.duel("machine_learning", "simpleton"))
-    print("###")
-    print("retaliate_75")
-    print(simulation.duel("machine_learning", "retaliate_75"))
-    # for i in range(len(players)):
-    #     try:
-    #         simulation.players[i].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
-    #     except:
-    #         pass
+    simulation.duel_all("machine_learning")
+    # print("###")
+    # print("always_defect")
+    # print(simulation.duel("machine_learning", "always_defect"))
+    # print("###")
+    # print("tit_for_tat")
+    # print(simulation.duel("machine_learning", "tit_for_tat"))
+    # print("###")
+    # print("grudger")
+    # print(simulation.duel("machine_learning", "grudger"))
+    # print("###")
+    # print("simpleton")
+    # print(simulation.duel("machine_learning", "simpleton"))
+    # print("###")
+    # print("retaliate_75")
+    # print(simulation.duel("machine_learning", "retaliate_75"))
 
 
 if __name__ == '__main__':
     exhaustive(0)
-    # simulation: Simulation = Simulation({"always_cooperate": 10, "machine_learning": 10}, 10, 25, 0)
-    # result = simulation.simulate()
-    # simulation.players[1].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
-    # print(result)

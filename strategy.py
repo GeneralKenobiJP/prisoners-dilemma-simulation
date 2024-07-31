@@ -205,7 +205,7 @@ class machine_learning_strategy_model:
     """
     Class that holds a machine learning strategy model. Uses q-learning
     """
-    def __init__(self, learning_rate: float = 0.25, discount_factor: float = 0.8):
+    def __init__(self, learning_rate: float = 0.25, discount_factor: float = 0.9):
         """
         Constructor for machine learning strategy model
         :param learning_rate: The higher the learning rate, the more responsive to change the model is.
