@@ -45,7 +45,7 @@ class Dilemma:
         decision1: bool = bool(self.player1.strategy(self.turn, self.turns_min, self.turns_max, self.payoff_matrix,
                                                 self.history1, self.history2, self.score1, self.score2))
         decision2: bool = bool(self.player2.strategy(self.turn, self.turns_min, self.turns_max, self.payoff_matrix,
-                                                self.history1, self.history2, self.score1, self.score2))
+                                                self.history2, self.history1, self.score2, self.score1))
 
         debug_string1: str = str(decision1)
         debug_string2: str = str(decision2)
