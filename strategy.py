@@ -130,7 +130,7 @@ def two_tits_for_tat(turn: int, turns_min: int, turns_max: int, payoff_matrix: n
     """
     if len(opponent_history) == 0:
         return True
-    if opponent_history[-1] is False or len(opponent_history) == 1 or opponent_history[-2] is False:
+    if opponent_history[-1] is False or (len(opponent_history) > 1 and opponent_history[-2] is False):
         return False
     return True
 
@@ -205,7 +205,7 @@ class machine_learning_strategy_model:
     """
     Class that holds a machine learning strategy model. Uses q-learning
     """
-    def __init__(self, learning_rate: float = 0.25, discount_factor: float = 0.9):
+    def __init__(self, learning_rate: float = 0.15, discount_factor: float = 0.9):
         """
         Constructor for machine learning strategy model
         :param learning_rate: The higher the learning rate, the more responsive to change the model is.
