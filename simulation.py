@@ -1,7 +1,6 @@
 from typing import List, Dict
 
 import numpy as np
-import numba as nb
 
 from player import Player
 import strategy
@@ -161,6 +160,7 @@ def exhaustive(error: float) -> None:
     #         simulation.players[i].strategy(-1, -1, -1, None, None, None, 0, 0)  # Debug machine learning model
     #     except:
     #         pass
+
 
 def suite(players: Dict[str, int], error: float, iterations: int) -> None:
     """
