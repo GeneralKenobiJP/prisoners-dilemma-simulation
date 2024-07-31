@@ -178,12 +178,12 @@ def simpleton(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarr
         return True
     if opponent_history[-1] is True:
         if own_history[-1] is True:
-            return bool(payoff_matrix[0, 0] > 0)
-        return bool(payoff_matrix[1, 0] > 0)
+            return True if bool(payoff_matrix[0, 0] > 0) else False
+        return False if bool(payoff_matrix[2, 0] > 0) else True
 
     if own_history[-1] is True:
-        return bool(payoff_matrix[2, 0] > 0)
-    return bool(payoff_matrix[3, 0]) > 0
+        return True if bool(payoff_matrix[1, 0] > 0) else False
+    return False if bool(payoff_matrix[3, 0]) > 0 else True
 
 def coop_75(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
