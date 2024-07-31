@@ -171,7 +171,7 @@ def detective(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarr
 def simpleton(turn: int, turns_min: int, turns_max: int, payoff_matrix: np.ndarray, own_history: List[bool],
                      opponent_history: List[bool], own_score: int, opponent_score: int):
     """
-    If the last move earned points, repeat the last move. Otherwise, do opposite of the last move.
+    If the last move earned points, repeat the last move. Otherwise, do the opposite of the last move.
     If first move - cooperate
     """
     if len(opponent_history) == 0:

@@ -113,6 +113,21 @@ class strategy_test(unittest.TestCase):
         self.assertEqual(False,
                          strategy.detective(6, 10, 15, self.payoff_matrix, [True, False, True, True, True],
                                             [True, True, False, True, True], 1, 5))
+    def test_simpleton(self):
+        self.assertEqual(True,
+                         strategy.simpleton(1, 10, 15, self.payoff_matrix, [], [], 0, 0))
+        self.assertEqual(False,
+                         strategy.simpleton(2, 10, 15, self.payoff_matrix, [True], [False], -1, 3))
+        self.assertEqual(True,
+                         strategy.simpleton(2, 10, 15, self.payoff_matrix, [True], [True], 2, 2))
+        self.assertEqual(True,
+                         strategy.simpleton(2, 10, 15, self.payoff_matrix, [False], [False], 0, 0))
+        self.assertEqual(False,
+                         strategy.simpleton(2, 10, 15, self.payoff_matrix, [False], [True], 0, 0))
+        self.assertEqual(False,
+                         strategy.simpleton(3, 10, 15, self.payoff_matrix, [True, False], [False, True], 2, 2))
+        self.assertEqual(True,
+                         strategy.simpleton(4, 10, 15, self.payoff_matrix, [True, False], [False, False], 1, 5))
 
     if __name__ == '__main__':
         unittest.main()
