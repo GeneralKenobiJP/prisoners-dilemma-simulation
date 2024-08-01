@@ -23,8 +23,9 @@ class Simulation:
         :param payoff_matrix: Dilemma payoff matrix, ndarray
             [ [coop, coop], [coop, deflect], [deflect, coop], [deflect, deflect] ]
         """
-        self.mode: str = mode
+        # self.standings: List[Dict[str, int]] = players
         self.players: List[Player] = self.init_players(players)
+        self.mode: str = mode
         self.turns_min: int = turns_min
         self.turns_max: int = turns_max
         self.payoff_matrix: np.ndarray = payoff_matrix
@@ -32,21 +33,7 @@ class Simulation:
 
     def init_players(self, players: Dict[str, int]) -> List[Player]:
         """
-        Initialize the players. Call specific methods based on the mode.
-        :param players: Dictionary of players as specified in the constructor
-        :return: List of Players objects
-        :raises: ValueError: if invalid mode of the simulation was given
-        """
-        if self.mode == 'round-robin':
-            return self.init_players_round_robin(players)
-        elif self.mode == 'evolution':
-            return self.init_players_evolution(players)
-        else:
-            raise ValueError('Invalid mode of simulation')
-
-    def init_players_round_robin(self, players: Dict[str, int]) -> List[Player]:
-        """
-        Initialize the players for the round-robin simulation
+        Initialize the players
         :param players: Dictionary of players as specified in the constructor
         :return: List of Players objects
         """
@@ -57,17 +44,6 @@ class Simulation:
                 if i > 0:
                     name += ' #' + str(i+1)
                 player_list.append(Player(strategy.get_strategy(player_type[0]), name))
-        return player_list
-    def init_players_evolution(self, players: Dict[str, int]) -> List[Player]:
-        """
-        Initialize the players for the evolution simulation
-        :param players: Dictionary of players as specified in the constructor
-        :return: List of Players objects
-        """
-        player_list: List[Player] = []
-        for player_type in players.items():
-            name: str = player_type[0]
-            player_list.append(Player(strategy.get_strategy(player_type[0]), name, player_type[1]))
         return player_list
 
     def round_robin(self) -> Dict[str, int]:
@@ -92,13 +68,7 @@ class Simulation:
         return standings
 
     def evolution(self) -> Dict[str, int]:
-        """
-        Simulate an evolution tournament
-        :return: Dictionary of standings - {player type, population size}
-        """
-        turn_limit = 50
-
-        return standings
+        pass
 
     def simulate(self) -> Dict[str, int]:
         """
