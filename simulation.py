@@ -63,9 +63,10 @@ class Simulation:
         return standings
 
     def evolution(self) -> Dict[str, int]:
+        players_backup: List[Player] = self.players
         census: Dict[str, int]
 
-        for i in range(25):
+        for i in range(15):
             self.tournament()
 
             self.players = sorted(self.players, key=lambda buffer_player: buffer_player.score, reverse=True)
@@ -83,9 +84,13 @@ class Simulation:
                 except:
                     census[name] = 1
 
+            census = dict(sorted(census.items(), key=lambda item: item[1], reverse=True))
+            print(census)
+
             if len(census) == 1:
                 break
 
+        self.players = players_backup
         return census
 
     def tournament(self):
@@ -188,15 +193,38 @@ def exhaustive(error: float) -> None:
     #     except:
     #         pass
 
+def exhaustive_evolution(error: float) -> None:
+    """
+    Evolution simulation with every defined strategy participating with population size of 5
+    """
+    players: Dict[str, int] = {
+        'always_cooperate': 5,
+        'always_defect': 5,
+        'tit_for_tat': 5,
+        'grudger': 5,
+        'pick_random': 5,
+        'sus_tit_for_tat': 5,
+        'tit_for_two_tats': 5,
+        'two_tits_for_tat': 5,
+        'pavlov': 5,
+        'detective': 5,
+        'simpleton': 5,
+        'coop_75': 5,
+        'retaliate_75': 5,
+        'machine_learning': 5
+    }
+    suite(players, error, 50, 'evolution')
 
-def suite(players: Dict[str, int], error: float, iterations: int) -> None:
+
+def suite(players: Dict[str, int], error: float, iterations: int, mode: str = 'round-robin') -> None:
     """
     Runs the simulation with preselected players and error rate for a given number of iterations.
     :param players: Dictionary of players
     :param error: Error chance
     :param iterations: Number of iterations
+    :param mode: Mode of the simulation
     """
-    simulation: Simulation = Simulation(players, 10, 25, error)
+    simulation: Simulation = Simulation(players, 10, 25, error, mode)
     for i in range(iterations):
         result = simulation.simulate()
         print("\n")
@@ -205,7 +233,7 @@ def suite(players: Dict[str, int], error: float, iterations: int) -> None:
         if i != iterations - 1:
             for player in simulation.players:
                 player.score = 0
-    simulation.duel_all("machine_learning")
+    # simulation.duel_all("machine_learning")
     # print("###")
     # print("always_defect")
     # print(simulation.duel("machine_learning", "always_defect"))
@@ -224,4 +252,4 @@ def suite(players: Dict[str, int], error: float, iterations: int) -> None:
 
 
 if __name__ == '__main__':
-    exhaustive(0)
+    exhaustive_evolution(0)
