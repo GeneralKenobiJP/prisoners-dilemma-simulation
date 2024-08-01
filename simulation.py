@@ -1,3 +1,4 @@
+import math
 from typing import List, Dict
 
 import numpy as np
@@ -51,13 +52,7 @@ class Simulation:
         Simulate a round-robin tournament
         :return: Dictionary of standings - {unique player name, score}
         """
-        for i in range(len(self.players)-1):
-            for j in range(i+1, len(self.players)):
-                dilemma: Dilemma = Dilemma(self.payoff_matrix,
-                                           self.turns_min, self.turns_max, self.error, self.players[i], self.players[j])
-                result: (int, int) = dilemma.run()
-                self.players[i].score += result[0]
-                self.players[j].score += result[1]
+        self.tournament()
 
         self.players = sorted(self.players, key=lambda buffer_player: buffer_player.score, reverse=True)
 
@@ -68,7 +63,39 @@ class Simulation:
         return standings
 
     def evolution(self) -> Dict[str, int]:
-        pass
+        census: Dict[str, int]
+
+        for i in range(25):
+            self.tournament()
+
+            self.players = sorted(self.players, key=lambda buffer_player: buffer_player.score, reverse=True)
+
+            cutoff_index: int = math.ceil(0.9*len(self.players))
+            replacement_count: int = len(self.players) - cutoff_index
+            self.players = self.players[:cutoff_index]
+            self.players.extend(self.players[:replacement_count])
+
+            census = {}
+            for player in self.players:
+                name: str = player.name if player.name.find('#') == -1 else player.name[:player.name.find('#') - 1]
+                try:
+                    census[name] = census[name] + 1
+                except:
+                    census[name] = 1
+
+            if len(census) == 1:
+                break
+
+        return census
+
+    def tournament(self):
+        for i in range(len(self.players) - 1):
+            for j in range(i + 1, len(self.players)):
+                dilemma: Dilemma = Dilemma(self.payoff_matrix,
+                                           self.turns_min, self.turns_max, self.error, self.players[i], self.players[j])
+                result: (int, int) = dilemma.run()
+                self.players[i].score += result[0]
+                self.players[j].score += result[1]
 
     def simulate(self) -> Dict[str, int]:
         """
