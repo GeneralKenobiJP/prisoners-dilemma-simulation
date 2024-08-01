@@ -154,7 +154,6 @@ class Simulation:
         self.mode = temp_mode
 
 
-
 def simplest(error: float) -> None:
     """
     Simplest possible simulation
@@ -162,6 +161,7 @@ def simplest(error: float) -> None:
     simulation: Simulation = Simulation({"always_cooperate": 20}, 10, 25, error)
     result = simulation.simulate()
     print(result)
+
 
 def exhaustive(error: float) -> None:
     """
@@ -193,6 +193,7 @@ def exhaustive(error: float) -> None:
     #     except:
     #         pass
 
+
 def exhaustive_evolution(error: float) -> None:
     """
     Evolution simulation with every defined strategy participating with population size of 5
@@ -216,6 +217,25 @@ def exhaustive_evolution(error: float) -> None:
     suite(players, error, 50, 'evolution')
 
 
+def hostile_evolution(error: float) -> None:
+    """
+    Evolution simulation with more hostile environment, pressure on always_defect and retaliation.
+    """
+    players: Dict[str, int] = {
+        'always_defect': 20,
+        'tit_for_tat': 5,
+        'grudger': 10,
+        'sus_tit_for_tat': 5,
+        'two_tits_for_tat': 5,
+        'pavlov': 5,
+        'detective': 10,
+        'simpleton': 5,
+        'coop_75': 5,
+        'machine_learning': 10
+    }
+    suite(players, error, 50, 'evolution')
+
+
 def suite(players: Dict[str, int], error: float, iterations: int, mode: str = 'round-robin') -> None:
     """
     Runs the simulation with preselected players and error rate for a given number of iterations.
@@ -233,7 +253,7 @@ def suite(players: Dict[str, int], error: float, iterations: int, mode: str = 'r
         if i != iterations - 1:
             for player in simulation.players:
                 player.score = 0
-    # simulation.duel_all("machine_learning")
+    simulation.duel_all("machine_learning")
     # print("###")
     # print("always_defect")
     # print(simulation.duel("machine_learning", "always_defect"))
@@ -253,3 +273,4 @@ def suite(players: Dict[str, int], error: float, iterations: int, mode: str = 'r
 
 if __name__ == '__main__':
     exhaustive_evolution(0)
+    # hostile_evolution(0)
