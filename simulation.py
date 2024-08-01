@@ -1,3 +1,4 @@
+import math
 from typing import List, Dict
 
 import numpy as np
@@ -51,13 +52,7 @@ class Simulation:
         Simulate a round-robin tournament
         :return: Dictionary of standings - {unique player name, score}
         """
-        for i in range(len(self.players)-1):
-            for j in range(i+1, len(self.players)):
-                dilemma: Dilemma = Dilemma(self.payoff_matrix,
-                                           self.turns_min, self.turns_max, self.error, self.players[i], self.players[j])
-                result: (int, int) = dilemma.run()
-                self.players[i].score += result[0]
-                self.players[j].score += result[1]
+        self.tournament()
 
         self.players = sorted(self.players, key=lambda buffer_player: buffer_player.score, reverse=True)
 
@@ -68,7 +63,44 @@ class Simulation:
         return standings
 
     def evolution(self) -> Dict[str, int]:
-        pass
+        players_backup: List[Player] = self.players
+        census: Dict[str, int]
+
+        for i in range(15):
+            self.tournament()
+
+            self.players = sorted(self.players, key=lambda buffer_player: buffer_player.score, reverse=True)
+
+            cutoff_index: int = math.ceil(0.9*len(self.players))
+            replacement_count: int = len(self.players) - cutoff_index
+            self.players = self.players[:cutoff_index]
+            self.players.extend(self.players[:replacement_count])
+
+            census = {}
+            for player in self.players:
+                name: str = player.name if player.name.find('#') == -1 else player.name[:player.name.find('#') - 1]
+                try:
+                    census[name] = census[name] + 1
+                except:
+                    census[name] = 1
+
+            census = dict(sorted(census.items(), key=lambda item: item[1], reverse=True))
+            print(census)
+
+            if len(census) == 1:
+                break
+
+        self.players = players_backup
+        return census
+
+    def tournament(self):
+        for i in range(len(self.players) - 1):
+            for j in range(i + 1, len(self.players)):
+                dilemma: Dilemma = Dilemma(self.payoff_matrix,
+                                           self.turns_min, self.turns_max, self.error, self.players[i], self.players[j])
+                result: (int, int) = dilemma.run()
+                self.players[i].score += result[0]
+                self.players[j].score += result[1]
 
     def simulate(self) -> Dict[str, int]:
         """
@@ -122,7 +154,6 @@ class Simulation:
         self.mode = temp_mode
 
 
-
 def simplest(error: float) -> None:
     """
     Simplest possible simulation
@@ -130,6 +161,7 @@ def simplest(error: float) -> None:
     simulation: Simulation = Simulation({"always_cooperate": 20}, 10, 25, error)
     result = simulation.simulate()
     print(result)
+
 
 def exhaustive(error: float) -> None:
     """
@@ -162,14 +194,57 @@ def exhaustive(error: float) -> None:
     #         pass
 
 
-def suite(players: Dict[str, int], error: float, iterations: int) -> None:
+def exhaustive_evolution(error: float) -> None:
+    """
+    Evolution simulation with every defined strategy participating with population size of 5
+    """
+    players: Dict[str, int] = {
+        'always_cooperate': 5,
+        'always_defect': 5,
+        'tit_for_tat': 5,
+        'grudger': 5,
+        'pick_random': 5,
+        'sus_tit_for_tat': 5,
+        'tit_for_two_tats': 5,
+        'two_tits_for_tat': 5,
+        'pavlov': 5,
+        'detective': 5,
+        'simpleton': 5,
+        'coop_75': 5,
+        'retaliate_75': 5,
+        'machine_learning': 5
+    }
+    suite(players, error, 50, 'evolution')
+
+
+def hostile_evolution(error: float) -> None:
+    """
+    Evolution simulation with more hostile environment, pressure on always_defect and retaliation.
+    """
+    players: Dict[str, int] = {
+        'always_defect': 20,
+        'tit_for_tat': 5,
+        'grudger': 10,
+        'sus_tit_for_tat': 5,
+        'two_tits_for_tat': 5,
+        'pavlov': 5,
+        'detective': 10,
+        'simpleton': 5,
+        'coop_75': 5,
+        'machine_learning': 10
+    }
+    suite(players, error, 50, 'evolution')
+
+
+def suite(players: Dict[str, int], error: float, iterations: int, mode: str = 'round-robin') -> None:
     """
     Runs the simulation with preselected players and error rate for a given number of iterations.
     :param players: Dictionary of players
     :param error: Error chance
     :param iterations: Number of iterations
+    :param mode: Mode of the simulation
     """
-    simulation: Simulation = Simulation(players, 10, 25, error)
+    simulation: Simulation = Simulation(players, 10, 25, error, mode)
     for i in range(iterations):
         result = simulation.simulate()
         print("\n")
@@ -197,4 +272,5 @@ def suite(players: Dict[str, int], error: float, iterations: int) -> None:
 
 
 if __name__ == '__main__':
-    exhaustive(0)
+    exhaustive_evolution(0)
+    # hostile_evolution(0)
