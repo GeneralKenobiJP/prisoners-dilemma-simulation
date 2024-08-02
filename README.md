@@ -28,6 +28,8 @@ The list of strategies that have been implemented is as follows:
 * *retaliate-75* - cooperate, unless cheated - then retaliate with .75 probability
 * *machine learning* - utilizes q-learning. The model is instantiated from scratch every time the simulation object is created, so the learning process should happen through the *suite* function rather than reinstantiating the simulation
 
+There are *duel* and *duel_all* functions that enable to just battle selected strategies. They can be used to analyze the machine learning model after the simulation(s).
+
 I have analyzed mostly two sets of players: *exhaustive* - having each strategy once, *hostile* - focusing on strategies that want to cheat or backstab sneakily
 
 My foundings:
@@ -35,3 +37,5 @@ My foundings:
 to the tit-for-tat strategy, in more extreme situation switching to the grudger
 * Sometimes, the model would learn to cheat on the detective strategy in turn 7 to gain back what was lost in turn 2, which I found to be interesting
 * In hostile environment, the model seemed to default to always defect
+
+There are some .txt files that contain *duel_all* results of the machine learning strategy after some simulations.
