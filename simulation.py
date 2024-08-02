@@ -254,21 +254,6 @@ def suite(players: Dict[str, int], error: float, iterations: int, mode: str = 'r
             for player in simulation.players:
                 player.score = 0
     simulation.duel_all("machine_learning")
-    # print("###")
-    # print("always_defect")
-    # print(simulation.duel("machine_learning", "always_defect"))
-    # print("###")
-    # print("tit_for_tat")
-    # print(simulation.duel("machine_learning", "tit_for_tat"))
-    # print("###")
-    # print("grudger")
-    # print(simulation.duel("machine_learning", "grudger"))
-    # print("###")
-    # print("simpleton")
-    # print(simulation.duel("machine_learning", "simpleton"))
-    # print("###")
-    # print("retaliate_75")
-    # print(simulation.duel("machine_learning", "retaliate_75"))
 
 
 if __name__ == '__main__':
